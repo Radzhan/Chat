@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
+import Message from './components/Message/Message';
 import { arrayWithMessages } from './types';
 let lastDate = ''
+
 function App() {
   const [messages, setMessages] = useState<arrayWithMessages[]>([])
 
@@ -34,7 +36,7 @@ function App() {
 
       if (lastDate === '') {
         for (let i = 0; i < answer.length; i++) {
-          setMessages(prev => [...prev , {message: answer[i].message, author: answer[i].author, datetime: answer[i].datetime}])
+          setMessages(prev => [...prev , {message: answer[i].message, _id: answer[i]._id, author: answer[i].author, datetime: answer[i].datetime}])
           lastDate = answer[i].datetime
         }
       } else {
@@ -46,14 +48,21 @@ function App() {
 
         if (answerFromUrlArr.length !== 0) {
           for (let i = 0; i < answerFromUrlArr.length; i++) {
-            setMessages(prev => [...prev, {message: answerFromUrlArr[i].message, author: answerFromUrlArr[i].author, datetime: answerFromUrlArr[i].datetime}])
+            setMessages(prev => [...prev, {message: answerFromUrlArr[i].message, _id: answerFromUrlArr[i]._id, author: answerFromUrlArr[i].author, datetime: answerFromUrlArr[i].datetime}])
             lastDate = answerFromUrlArr[i].datetime
           }
         }
       }
 
     }, 3000)
-  })
+  }, [])
+
+  console.log(messages)
+
+
+  let createMessage = messages.map(message => (
+    <Message key={message._id} message={message.message} author={message.author}/>
+  ))
 
   return (
     <div className="App">
@@ -68,6 +77,7 @@ function App() {
         }} required />
         <button onClick={setMessage}>Sande</button>
       </form>
+      {createMessage}
     </div>
   );
 }
